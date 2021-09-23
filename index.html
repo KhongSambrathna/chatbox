@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBox</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            background-image: url("https://hawkesburyit.com.au/wp-content/uploads/2016/04/website-background.gif");
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        #whole {
+            width: 800px;
+            height: 600px;
+            margin: auto;
+            background-image: url("https://r1.ilikewallpaper.net/ipad-air-wallpapers/download/24199/Nature-Autumn-Red-Leaf-Calm-Lake-Landscape-ipad-air-wallpaper-ilikewallpaper_com_1024.jpg");
+            background-size: cover;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        nav {
+            width: 760px;
+            height: 60px;
+            padding: 5px 20px;
+            background-color: #ccc;
+        }
+        .profile {
+            width: 60px;
+            height: 20px;
+            border-radius: 30px;
+            background-color: brown;
+            text-align: center;
+            float: left;
+            font-size: 18px;
+            padding: 20px 0;
+            color: #FFFFFF;
+        }
+        .profile_name {
+            height: 60px;
+            margin-left: 20px;
+            text-align: center;
+            float: left;
+            display: flex;
+            align-items: center;
+            font-size: 18pt;
+        }
+        .content {
+            width: 760px;
+            height: 500px;
+            padding: 5px 20px;
+            overflow-x: hidden;
+            overflow-y: scroll;
+        }
+        .content_box {
+            width: 100%;
+            height: 40px;
+            margin-top: 10px;
+            font-family: "Khmer OS Siem Reap";
+        }
+        .content_box_left {
+            height: 40px;
+            background-color: rgb(230,231,236);
+            float: left;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            border-radius: 4px;
+        }
+        .content_box_right {
+            height: 40px;
+            background-color: rgb(0,134,255);
+            color: white;
+            float: right;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            border-radius: 4px;
+        }
+        .type_massage_box {
+            width: 760px;
+            height: 40px;
+            padding: 0 20px;
+            background-color: white;
+            float: left;
+            position: relative;
+        }
+        .input_message {
+            width: 700px;
+            height: 24px;
+            position: absolute;
+            outline: none;
+            border: none;
+            font-size: 12pt;
+            padding-top: 10px;
+        }
+        .sent_btn {
+            height: 30px;
+            cursor: pointer;
+            position: absolute;
+            top: 6px;
+            right: 25px;
+        }
+        .option {
+            display: flex;
+            display: none;
+            align-items: center;
+        }
+        .option div {
+            cursor: pointer;
+        }
+        .option div :hover {
+            color: red;
+        }
+        .option div:nth-child(2) {
+            margin-left: 500px;
+        }
+        .option div:nth-child(3), .option div:nth-child(4) {
+            margin-left: 30px;
+        }
+        .edit {
+            display: none;
+        }
+        .editMessage {
+            width: 762px;
+            position: absolute;
+            z-index: 10;
+            top: -67px;
+            left: 0px;
+            background-color: #FFFFFF;
+            padding-left: 20px;
+            border-bottom: 2px solid #ccc;
+            border-top: 2px solid #ccc;
+
+        }
+        .editMessage div:nth-child(1) {
+            font-size: 12pt;
+            color: rgb(45, 120, 231);
+            padding-top: 10px;
+        }
+        .editMessage div:nth-child(2) {
+            font-size: 10pt;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body onload="autoScrollDown()">
+    <div id="whole">
+        <!--Profile-->
+        <nav id="option_1">
+            <div class="profile">KS</div>
+            <div class="profile_name">Khong Sambrathna</div>
+        </nav>
+        <!--Clicked Message Option-->
+        <nav id="option_2" class="option">
+            <div onclick="cancel()">Cancel</div>
+            <div onclick="copyMessage()">Copy</div>
+            <div onclick="edit()">Edit</div>
+            <div onclick="deleteMessage()">Delete</div>
+        </nav>
+        <!--User Message-->
+        <div class="content"></div>
+        <!--User Input Message-->
+        <div class="type_massage_box input">
+            <form>
+                <input class="input_message" type="text" placeholder="Message...">
+            </form>
+            <img onclick="sentMessage()" class="sent_btn" src="https://cdn-icons-png.flaticon.com/512/60/60525.png">
+        </div>
+        <!--User Edit Message-->
+        <div class="type_massage_box edit">
+            <div class="editMessage">
+                <div>Edit Message</div>
+                <div id="editingMessage">Text For Edit</div>
+            </div>
+            <form>
+                <input class="input_message" type="text" placeholder="Message...">
+            </form>
+            <img onclick="sentEditMessage()" class="sent_btn" src="https://cdn-icons-png.flaticon.com/512/60/60525.png">
+        </div>    
+    </div>  
+    <script>
+        // Default Message
+        var myMessage = "<div class='content_box'><div class='content_box_left'>ជំរាបសួរលោកគ្រូ!</div></div> <div class='content_box'><div class='content_box_left'>នេះគឺជាកិច្ចការផ្ទះទី ៦។</div></div> <div class='content_box'><div class='content_box_left'>សូមលោកគ្រូវាយបញ្ជូលនិងបញ្ជូនសារមកខ្ញុំ។</div></div> <div class='content_box'><div class='content_box_left'>បន្ទាប់មកទើបលោកគ្រូអាចកែ ចម្លង លុបសារ​ ឬក៏បោះបង់បាន។</div></div> <div class='content_box'><div class='content_box_left'>សូមចុច​ប៊ូតុងផ្ញើរសារ ដើម្បីផ្ញើរសារ </div></div> <div class='content_box'><div class='content_box_left'>សូមចុចឃ្លីកលើសារដែលបានផ្ញើរដើម្បីឃើញជម្រើសច្រើនទៀត</div></div>";
+        var defaultMessage = myMessage;
+        document.getElementsByClassName("content")[0].innerHTML = defaultMessage;
+        // Sent Message
+        var count = -1;
+        var userInput = [];
+        function sentMessage(){
+            document.getElementsByClassName("option")[0].style.display = "none";
+            document.getElementById("option_1").style.display = "block";
+            var Message = document.getElementsByClassName("input_message")[0].value;
+            if(Message[0]!=""){
+                count++;
+                var totalUserInput = "";
+                for(var i=0; i<userInput.length; i++){
+                    totalUserInput += userInput[i];
+                }
+                userInput[count] = "<div class='content_box' id='del" + count + "' onclick='DeleteId(this)'><div class='content_box_right' id='" + count + "' onclick='chat_option(this)'>" + Message + "</div></div>";
+                document.getElementsByClassName("input_message")[0].value = "";
+                document.getElementsByClassName("content")[0].innerHTML = defaultMessage + userInput.join("");
+                autoScrollDown();
+            }
+        }
+        // Get Id From A Clicked Element
+        function getId(message){
+            return message.id;
+        }
+        // For Storing Id Of Clicked Element
+        var selectedId;
+        function chat_option(message){
+            document.getElementsByClassName("option")[0].style.display = "flex";
+            document.getElementById("option_1").style.display = "none";
+            var idName = getId(message);
+            selectedId = idName;
+        }
+        // Edit Selected Message
+        function edit(){
+            var editText = document.getElementById(selectedId).textContent;
+            document.getElementsByClassName("input_message")[1].value = editText;
+            document.getElementById("editingMessage").textContent = editText;
+            document.getElementsByClassName("edit")[0].style.display = "flex";
+            document.getElementsByClassName("input")[0].style.display = "none";
+        }
+        // Sent Edit Message
+        function sentEditMessage(){
+            var editMessage = document.getElementsByClassName("input_message")[1].value;
+            document.getElementById(selectedId).textContent = editMessage;
+            userInput[selectedId] = "<div class='content_box' id='del" + selectedId + "' onclick='DeleteId(this)'><div class='content_box_right' id='" + selectedId + "' onclick='chat_option(this)'>" + editMessage + "</div></div>";
+            document.getElementsByClassName("edit")[0].style.display = "none";
+            document.getElementsByClassName("input")[0].style.display = "flex";
+            document.getElementsByClassName("option")[0].style.display = "none";
+            document.getElementById("option_1").style.display = "flex";
+        }
+        // Cancel Option
+        function cancel(){
+            document.getElementsByClassName("option")[0].style.display = "none";
+            document.getElementById("option_1").style.display = "block";
+            document.getElementsByClassName("edit")[0].style.display = "none";
+            document.getElementsByClassName("input")[0].style.display = "flex";
+        }
+        // Get Delete Id
+        var delId;
+        function DeleteId(message){
+            delId = message.id.slice(-1);
+        }
+        // Delete
+        function deleteMessage(){
+            document.getElementById("del" + delId).remove();
+            userInput[delId] = "";
+            document.getElementsByClassName("option")[0].style.display = "none";
+            document.getElementById("option_1").style.display = "flex";
+            alert("Deleted Message");
+        }
+        // Copy
+        function copyMessage(){
+             var copyText = document.getElementById(selectedId).textContent;
+             navigator.clipboard.writeText(copyText);
+             alert("Copied Message to Clipboard");
+        }
+        // Auto Scroll Down When Added New Message
+        function autoScrollDown(){
+            let scrollDown = document.getElementsByClassName("content")[0];
+            scrollDown.scrollTop = scrollDown.scrollHeight;
+        }
+    </script>
+</body>
+</html>
